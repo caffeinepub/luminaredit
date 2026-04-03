@@ -1,0 +1,364 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: "BricolageGrotesque";
+  src: url("/assets/fonts/BricolageGrotesque.woff2") format("woff2");
+  font-weight: 200 800;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "PlusJakartaSans";
+  src: url("/assets/fonts/PlusJakartaSans.woff2") format("woff2");
+  font-weight: 300 700;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Satoshi";
+  src: url("/assets/fonts/Satoshi.woff2") format("woff2");
+  font-weight: 300 700;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "GeistMono";
+  src: url("/assets/fonts/GeistMono.woff2") format("woff2");
+  font-weight: 100 900;
+  font-display: swap;
+}
+
+@layer base {
+  :root {
+    --radius: 0.5rem;
+
+    /* === LUMINAR EDIT — Dark Futuristic Theme === */
+
+    /* ── Elevation stack (4 levels, each +0.025–0.03 L) ─────────────────
+       L0  app canvas    0.082
+       L1  sidebar/nav   0.10
+       L2  panels        0.13
+       L3  hover/active  0.17
+       Modals step up to L2 + stronger blur
+    ─────────────────────────────────────────────────────────────────── */
+    --elev-0: oklch(0.082 0.016 233);
+    --elev-1: oklch(0.1 0.019 233);
+    --elev-2: oklch(0.13 0.022 233);
+    --elev-3: oklch(0.17 0.026 228);
+    --elev-modal: oklch(0.145 0.024 233);
+
+    /* ── Typography scale (4-step, rem-based) ───────────────────────────
+       xs   11px  captions, badges, tiny labels
+       sm   12px  secondary labels, list sub-text
+       base 13px  primary UI text, buttons
+       lg   15px  panel headings, nav labels
+    ─────────────────────────────────────────────────────────────────── */
+    --text-xs: 0.6875rem; /* 11px */
+    --text-sm: 0.75rem; /* 12px */
+    --text-base: 0.8125rem; /* 13px */
+    --text-lg: 0.9375rem; /* 15px */
+    --text-xl: 1.0625rem; /* 17px — page headings */
+    --text-2xl: 1.375rem; /* 22px — modal / section titles */
+
+    /* ── Teal accent tokens ─────────────────────────────────────────── */
+    --teal-full: oklch(0.8 0.18 178); /* primary accent */
+    --teal-bright: oklch(0.88 0.2 172); /* hover / active */
+    --teal-dim: oklch(0.58 0.14 178); /* disabled / muted */
+    --teal-subtle: oklch(0.8 0.18 178 / 0.12); /* bg tint */
+    --teal-border: oklch(0.8 0.18 178 / 0.45); /* border */
+
+    /* ── shadcn semantic tokens ─────────────────────────────────────── */
+    --background: 0.082 0.016 233;
+    --foreground: 0.93 0.01 220;
+    --card: 0.13 0.022 233;
+    --card-foreground: 0.93 0.01 220;
+    --popover: 0.145 0.024 233;
+    --popover-foreground: 0.93 0.01 220;
+    --primary: 0.8 0.18 178;
+    --primary-foreground: 0.08 0.016 233;
+    --secondary: 0.17 0.024 230;
+    --secondary-foreground: 0.8 0.18 178;
+    --muted: 0.17 0.022 228;
+    --muted-foreground: 0.56 0.038 222;
+    --accent: 0.2 0.028 230;
+    --accent-foreground: 0.88 0.18 178;
+    --destructive: 0.62 0.22 25;
+    --destructive-foreground: 0.98 0 0;
+    --border: 0.23 0.026 230;
+    --input: 0.18 0.022 228;
+    --ring: 0.8 0.18 178;
+    --chart-1: 0.8 0.18 178;
+    --chart-2: 0.58 0.18 290;
+    --chart-3: 0.55 0.2 240;
+    --chart-4: 0.68 0.18 55;
+    --chart-5: 0.72 0.19 340;
+    --sidebar: 0.1 0.019 233;
+    --sidebar-foreground: 0.93 0.01 220;
+    --sidebar-primary: 0.8 0.18 178;
+    --sidebar-primary-foreground: 0.08 0.016 233;
+    --sidebar-accent: 0.17 0.022 228;
+    --sidebar-accent-foreground: 0.93 0.01 220;
+    --sidebar-border: 0.23 0.026 230;
+    --sidebar-ring: 0.8 0.18 178;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  html {
+    color-scheme: dark;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-family: "PlusJakartaSans", "Satoshi", system-ui, sans-serif;
+    background: var(--elev-0);
+    min-height: 100vh;
+    overflow: hidden;
+    font-size: var(--text-base);
+  }
+
+  ::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--elev-1);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: oklch(0.28 0.04 230);
+    border-radius: 2px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--teal-dim);
+  }
+}
+
+@layer utilities {
+  /* ── Elevation-aware glass surfaces ────────────────────────────────
+     Each level has a distinct background lightness, blur radius,
+     and inner highlight to simulate material depth.
+  ─────────────────────────────────────────────────────────────────── */
+
+  /* L1: sidebar / header — thinnest, no blur needed (opaque bg) */
+  .glass-l1 {
+    background: var(--elev-1);
+    border: 1px solid oklch(0.23 0.026 230 / 0.7);
+  }
+
+  /* L2: side panels (LeftPanel / RightPanel) */
+  .glass {
+    background: oklch(0.13 0.022 233 / 0.92);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid oklch(0.26 0.028 228 / 0.55);
+    box-shadow: 0 0 0 0.5px oklch(1 0 0 / 0.04) inset, 0 8px 32px
+      oklch(0 0 0 / 0.45);
+  }
+
+  /* L3: hover tiles, active states */
+  .glass-light {
+    background: oklch(0.17 0.026 228 / 0.95);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid oklch(0.3 0.032 226 / 0.5);
+    box-shadow: 0 0 0 0.5px oklch(1 0 0 / 0.06) inset, 0 4px 16px
+      oklch(0 0 0 / 0.35);
+  }
+
+  /* Modal surface — elevated above panels */
+  .glass-modal {
+    background: oklch(0.145 0.024 233 / 0.97);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid oklch(0.28 0.03 228 / 0.6);
+    box-shadow: 0 0 0 0.5px oklch(1 0 0 / 0.07) inset, 0 24px 64px
+      oklch(0 0 0 / 0.65);
+  }
+
+  /* ── Preview frame glow — refined two-layer approach ───────────────
+     Layer 1: sharp near-border teal ring (presence without bleed)
+     Layer 2: soft ambient halo (depth, not bloom)
+  ─────────────────────────────────────────────────────────────────── */
+  .preview-frame {
+    border: 1.5px solid var(--teal-border);
+    box-shadow: 0 0 0 1px oklch(0.8 0.18 178 / 0.18), 0 0 18px
+      oklch(0.8 0.18 178 / 0.28), 0 0 48px oklch(0.8 0.18 178 / 0.1), inset 0 0
+      24px oklch(0.8 0.18 178 / 0.03);
+  }
+
+  /* CTA glow — restrained, directional */
+  .teal-glow {
+    box-shadow: 0 2px 8px oklch(0 0 0 / 0.4), 0 0 16px oklch(0.8 0.18 178 / 0.3),
+      0 0 32px oklch(0.8 0.18 178 / 0.12);
+  }
+
+  .teal-glow-strong {
+    box-shadow: 0 4px 12px oklch(0 0 0 / 0.5), 0 0 24px
+      oklch(0.8 0.18 178 / 0.38), 0 0 52px oklch(0.8 0.18 178 / 0.16);
+  }
+
+  .teal-glow-text {
+    text-shadow: 0 0 10px oklch(0.8 0.18 178 / 0.55);
+  }
+
+  .teal-border-glow {
+    border-color: var(--teal-border);
+    box-shadow: 0 0 0 1px oklch(0.8 0.18 178 / 0.22), inset 0 0 16px
+      oklch(0.8 0.18 178 / 0.04);
+  }
+
+  /* ── Gradient text ──────────────────────────────────────────────── */
+  .gradient-text {
+    background: linear-gradient(
+      135deg,
+      oklch(0.88 0.2 172),
+      oklch(0.76 0.17 182)
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* ── CTA button ─────────────────────────────────────────────────── */
+  .btn-gradient {
+    background: linear-gradient(
+      135deg,
+      oklch(0.76 0.17 178),
+      oklch(0.83 0.2 170)
+    );
+    color: oklch(0.08 0.016 233);
+    font-weight: 600;
+  }
+
+  .btn-gradient:hover {
+    background: linear-gradient(
+      135deg,
+      oklch(0.83 0.2 170),
+      oklch(0.89 0.22 164)
+    );
+    box-shadow: 0 2px 8px oklch(0 0 0 / 0.4), 0 0 18px
+      oklch(0.8 0.18 178 / 0.42);
+  }
+
+  /* ── Timeline clip tracks ───────────────────────────────────────── */
+  .clip-video {
+    background: linear-gradient(
+      90deg,
+      oklch(0.38 0.12 178 / 0.92),
+      oklch(0.48 0.14 178 / 0.92)
+    );
+    border-color: oklch(0.6 0.14 178);
+  }
+
+  .clip-audio {
+    background: linear-gradient(
+      90deg,
+      oklch(0.32 0.15 290 / 0.92),
+      oklch(0.42 0.17 290 / 0.92)
+    );
+    border-color: oklch(0.55 0.17 290);
+  }
+
+  .clip-text {
+    background: linear-gradient(
+      90deg,
+      oklch(0.36 0.17 240 / 0.92),
+      oklch(0.46 0.19 240 / 0.92)
+    );
+    border-color: oklch(0.58 0.19 240);
+  }
+
+  .clip-overlay {
+    background: linear-gradient(
+      90deg,
+      oklch(0.46 0.13 58 / 0.92),
+      oklch(0.56 0.15 58 / 0.92)
+    );
+    border-color: oklch(0.68 0.15 58);
+  }
+
+  /* ── Tool tile hover ─────────────────────────────────────────────── */
+  .tool-tile:hover {
+    background: var(--elev-3);
+    border-color: oklch(0.8 0.18 178 / 0.4);
+    box-shadow: 0 0 12px oklch(0.8 0.18 178 / 0.18);
+  }
+
+  /* ── Loading pulse ───────────────────────────────────────────────── */
+  .teal-pulse {
+    animation: teal-pulse 2.4s ease-in-out infinite;
+  }
+
+  @keyframes teal-pulse {
+    0%,
+    100% {
+      box-shadow: 0 0 8px oklch(0.8 0.18 178 / 0.25);
+    }
+    50% {
+      box-shadow: 0 0 24px oklch(0.8 0.18 178 / 0.55), 0 0 48px
+        oklch(0.8 0.18 178 / 0.22);
+    }
+  }
+
+  /* ── Scan lines ──────────────────────────────────────────────────── */
+  .scanlines::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      oklch(0.8 0.18 178 / 0.015) 2px,
+      oklch(0.8 0.18 178 / 0.015) 4px
+    );
+    pointer-events: none;
+  }
+
+  /* ── No drag select ──────────────────────────────────────────────── */
+  .no-select {
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  /* ── Typography helpers (semantic, system-aware) ────────────────── */
+  .text-label-xs {
+    font-size: var(--text-xs);
+    line-height: 1.4;
+  }
+  .text-label-sm {
+    font-size: var(--text-sm);
+    line-height: 1.45;
+  }
+  .text-label-base {
+    font-size: var(--text-base);
+    line-height: 1.5;
+  }
+  .text-label-lg {
+    font-size: var(--text-lg);
+    line-height: 1.4;
+  }
+  .text-label-xl {
+    font-size: var(--text-xl);
+    line-height: 1.35;
+  }
+  .text-label-2xl {
+    font-size: var(--text-2xl);
+    line-height: 1.25;
+  }
+
+  /* Waveform (kept for animation reference) */
+  @keyframes waveform {
+    0%,
+    100% {
+      height: 4px;
+    }
+    50% {
+      height: 14px;
+    }
+  }
+}
